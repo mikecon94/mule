@@ -118,9 +118,9 @@
             <artifactId>spring-ldap-core</artifactId>
             <version>${springLdapVersion}</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-servlet_3.0_spec</artifactId>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
         </dependency>
 
         <dependency>

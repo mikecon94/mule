@@ -145,15 +145,16 @@ public class HttpRequestOutboundAttachmentsTestCase extends AbstractHttpRequestT
     public void sendingAttachmentBiggerThanAsyncWriteQueueSizeWorksOverHttps() throws Exception
     {
         MuleEvent event = getTestEvent(TEST_MESSAGE);
-        
-        // Grizzly defines the maxAsyncWriteQueueSize as 4 times the sendBufferSize (org.glassfish.grizzly.nio.transport.TCPNIOConnection).
+
+        // Grizzly defines the maxAsyncWriteQueueSize as 4 times the sendBufferSize
+        // (org.glassfish.grizzly.nio.transport.TCPNIOConnection).
         int maxAsyncWriteQueueSize = Integer.valueOf(sendBufferSize.getValue()) * 4;
 
         // Set an attachment bigger than the queue size.
         event.getMessage().addOutboundAttachment(TEST_PART_NAME, new byte[maxAsyncWriteQueueSize * 2], TEXT);
 
         MuleEvent response = runFlow("requestFlowTls", event);
-        
+
         assertThat((Integer) response.getMessage().getInboundProperty(HTTP_STATUS_PROPERTY), equalTo(OK.getStatusCode()));
     }
 
@@ -240,15 +241,7 @@ public class HttpRequestOutboundAttachmentsTestCase extends AbstractHttpRequestT
 
         MultiPartInputStreamParser inputStreamParser = new MultiPartInputStreamParser(request.getInputStream(), request.getContentType(), null, null);
 
-        try
-        {
-            parts = inputStreamParser.getParts();
-        }
-        catch (ServletException e)
-        {
-            throw new IOException(e);
-        }
-
+        parts = inputStreamParser.getParts();
 
         response.setContentType(HTML);
         response.setStatus(HttpServletResponse.SC_OK);
