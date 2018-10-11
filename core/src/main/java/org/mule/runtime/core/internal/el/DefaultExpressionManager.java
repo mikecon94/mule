@@ -17,7 +17,6 @@ import static org.mule.runtime.core.api.config.MuleProperties.OBJECT_EXPRESSION_
 import static org.mule.runtime.core.api.util.ClassUtils.isInstance;
 import static org.mule.runtime.core.api.util.StreamingUtils.updateTypedValueForStreaming;
 import static org.slf4j.LoggerFactory.getLogger;
-
 import org.mule.runtime.api.artifact.Registry;
 import org.mule.runtime.api.component.location.ComponentLocation;
 import org.mule.runtime.api.el.BindingContext;
@@ -43,12 +42,13 @@ import org.mule.runtime.core.internal.util.OneTimeWarning;
 import org.mule.runtime.core.privileged.el.GlobalBindingContextProvider;
 import org.mule.runtime.core.privileged.util.TemplateParser;
 
-import org.slf4j.Logger;
-
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.inject.Inject;
+
+import org.slf4j.Logger;
 
 public class DefaultExpressionManager implements ExtendedExpressionManager, Initialisable {
 
@@ -75,8 +75,13 @@ public class DefaultExpressionManager implements ExtendedExpressionManager, Init
   @Override
   public void initialise() throws InitialisationException {
     if (!initialized.getAndSet(true)) {
-      final DataWeaveExpressionLanguageAdaptor dwExpressionLanguage =
-          DataWeaveExpressionLanguageAdaptor.create(muleContext, registry);
+      DataWeaveExpressionLanguageAdaptor dwExpressionLanguage = null;
+
+      try {
+        dwExpressionLanguage = DataWeaveExpressionLanguageAdaptor.create(muleContext, registry);
+      } catch (NoSuchElementException e) {
+        // siga siga
+      }
 
       MVELExpressionLanguage mvelExpressionLanguage = null;
       if (registry.lookupByName(COMPATIBILITY_PLUGIN_INSTALLED).isPresent()) {

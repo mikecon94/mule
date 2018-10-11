@@ -92,7 +92,10 @@ public class ExpressionLanguageAdaptorHandler implements ExtendedExpressionLangu
 
   @Override
   public void addGlobalBindings(BindingContext bindingContext) {
-    expressionLanguages.get(DW_PREFIX).addGlobalBindings(bindingContext);
+    final ExtendedExpressionLanguageAdaptor el = expressionLanguages.get(DW_PREFIX);
+    if (el != null) {
+      el.addGlobalBindings(bindingContext);
+    }
   }
 
   @Override
